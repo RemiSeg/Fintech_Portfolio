@@ -16,6 +16,9 @@ public class SupabaseConfig {
 
         this.url = dotenv.get("SUPABASE_URL");
         this.key = dotenv.get("SUPABASE_KEY");
+
+        System.out.println("SUPABASE URL = " + url);
+        System.out.println("SUPABASE KEY LOADED = " + (key != null));
     }
 
     public String getUrl() {
