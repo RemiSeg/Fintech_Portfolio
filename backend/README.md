@@ -87,7 +87,7 @@ Stock prices are fetched **dynamically** from Yahoo Finance:
 ```
 GET https://query1.finance.yahoo.com/v8/finance/chart/{ticker}
 ```
-⚠️ **Note:** Price data is not persisted in the database.
+**Note:** Price data is not persisted in the database.
 
 ---
 
@@ -189,11 +189,11 @@ Run all tests:
 
 ## Design Philosophy
 
-✅ **Minimal Database** - Only metadata stored; prices fetched on-demand  
-✅ **API-Driven** - Yahoo Finance as single source of truth  
-✅ **Separation of Concerns** - Clear controller → service → repository flow  
-✅ **Production-Ready** - Enterprise-grade structure and patterns  
-✅ **Portfolio-First** - Core logic centered on portfolio management  
+**Minimal Database** - Only metadata stored; prices fetched on-demand  
+**API-Driven** - Yahoo Finance as single source of truth  
+**Separation of Concerns** - Clear controller → service → repository flow  
+**Production-Ready** - Enterprise-grade structure and patterns  
+**Portfolio-First** - Core logic centered on portfolio management  
 
 ---
 
