@@ -23,14 +23,19 @@ const routes = [
     component: () => import("@/pages/PortfolioFormPage.vue"),
   },
   {
+    path: "/portfolios/:portfolioId/edit",
+    name: "portfolio-edit",
+    component: () => import("@/pages/PortfolioFormPage.vue"),
+  },
+  {
     path: "/portfolios/:portfolioId",
     name: "portfolio-detail",
     component: () => import("@/pages/PortfolioDetailPage.vue"),
   },
   {
-    path: "/portfolios/:portfolioId/edit",
-    name: "portfolio-edit",
-    component: () => import("@/pages/PortfolioFormPage.vue"),
+    path: "/stocks",
+    name: "stocks",
+    component: () => import("@/pages/StocksPage.vue"),
   },
   {
     path: "/stocks/:ticker",
@@ -41,6 +46,10 @@ const routes = [
     path: "/compare",
     name: "compare",
     component: () => import("@/pages/ComparePage.vue"),
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: "/dashboard",
   },
 ];
 

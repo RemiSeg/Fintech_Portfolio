@@ -28,21 +28,30 @@
             {{ portfolio.isDefault ? "Default Portfolio" : "User Portfolio" }}
           </div>
 
-          <div v-if="!portfolio.isDefault" class="flex gap-2">
+          <div class="flex flex-wrap gap-2">
             <BaseButton
               variant="secondary"
-              @click="router.push(`/portfolios/${portfolio.id}/edit`)"
+              @click="router.push({ name: 'compare', query: { portfolioId: portfolio.id } })"
             >
-              Edit
+              Compare
             </BaseButton>
 
-            <BaseButton
-              variant="danger"
-              :disabled="deleting"
-              @click="deleteCurrentPortfolio"
-            >
-              {{ deleting ? "Deleting..." : "Delete" }}
-            </BaseButton>
+            <template v-if="!portfolio.isDefault">
+              <BaseButton
+                variant="secondary"
+                @click="router.push(`/portfolios/${portfolio.id}/edit`)"
+              >
+                Edit
+              </BaseButton>
+
+              <BaseButton
+                variant="danger"
+                :disabled="deleting"
+                @click="deleteCurrentPortfolio"
+              >
+                {{ deleting ? "Deleting..." : "Delete" }}
+              </BaseButton>
+            </template>
           </div>
         </div>
       </section>
@@ -124,10 +133,11 @@
 </template>
 
 <script setup>
-import { computed, onMounted, watch, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import AppLayout from "@/layouts/AppLayout.vue";
+import BaseButton from "@/components/common/BaseButton.vue";
 import BaseCard from "@/components/common/BaseCard.vue";
 import ErrorState from "@/components/common/ErrorState.vue";
 import LoadingState from "@/components/common/LoadingState.vue";
@@ -161,7 +171,6 @@ async function loadPortfolio() {
       error.response?.data?.error || "Could not load portfolio details.";
   }
 }
-
 
 async function deleteCurrentPortfolio() {
   if (!portfolio.value || portfolio.value.isDefault) return;

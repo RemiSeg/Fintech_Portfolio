@@ -11,7 +11,10 @@
           </p>
         </div>
 
-        <BaseButton @click="goToCreatePortfolio">
+        <BaseButton
+          :disabled="portfolioStore.userPortfolios.length >= 3"
+          @click="goToCreatePortfolio"
+        >
           Create Portfolio
         </BaseButton>
       </section>
@@ -26,7 +29,7 @@
 
         <MetricCard
           label="Your Portfolios"
-          :value="portfolioStore.userPortfolios.length"
+          :value="`${portfolioStore.userPortfolios.length}/3`"
         />
 
         <MetricCard
@@ -42,7 +45,7 @@
 
       <template v-else>
         <section class="space-y-4">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-col justify-between gap-3 md:flex-row md:items-end">
             <div>
               <h2 class="text-xl font-semibold text-[#1a146b]">
                 Your Portfolios
@@ -51,6 +54,14 @@
                 Portfolios created by your account. Limit: 3 portfolios.
               </p>
             </div>
+
+            <RouterLink
+              v-if="portfolioStore.userPortfolios.length < 3"
+              to="/portfolios/new"
+              class="text-sm font-semibold text-[#1a146b] hover:underline"
+            >
+              Create new
+            </RouterLink>
           </div>
 
           <BaseCard v-if="portfolioStore.userPortfolios.length === 0">
@@ -70,7 +81,13 @@
             </div>
           </BaseCard>
 
-          <div v-else class="grid gap-4 md:grid-cols-3">
+          <BaseCard v-else-if="portfolioStore.userPortfolios.length >= 3">
+            <p class="text-sm text-gray-700">
+              You have reached the limit of 3 user portfolios. Edit or delete an existing portfolio to create another one.
+            </p>
+          </BaseCard>
+
+          <div v-if="portfolioStore.userPortfolios.length > 0" class="grid gap-4 md:grid-cols-3">
             <PortfolioCard
               v-for="portfolio in portfolioStore.userPortfolios"
               :key="portfolio.id"
@@ -109,17 +126,26 @@
               </p>
             </div>
 
-            <input
-              v-model.trim="stockSearch"
-              type="text"
-              placeholder="Search ticker or company..."
-              class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#1a146b] focus:ring-2 focus:ring-[#1a146b]/10 md:w-72"
-            />
+            <div class="flex flex-col gap-2 sm:flex-row">
+              <input
+                v-model.trim="stockSearch"
+                type="text"
+                placeholder="Search ticker or company..."
+                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#1a146b] focus:ring-2 focus:ring-[#1a146b]/10 md:w-72"
+              />
+
+              <RouterLink
+                to="/stocks"
+                class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-[#1a146b] hover:bg-gray-50"
+              >
+                View all
+              </RouterLink>
+            </div>
           </div>
 
           <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <StockSummaryCard
-              v-for="stock in filteredStocks"
+              v-for="stock in filteredStocks.slice(0, 10)"
               :key="stock.ticker"
               :stock="stock"
             />
@@ -178,6 +204,7 @@ const filteredStocks = computed(() => {
 });
 
 function goToCreatePortfolio() {
+  if (portfolioStore.userPortfolios.length >= 3) return;
   router.push("/portfolios/new");
 }
 

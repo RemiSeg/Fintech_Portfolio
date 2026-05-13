@@ -6,9 +6,9 @@
           <button
             type="button"
             class="mb-3 text-sm font-medium text-gray-600 hover:text-[#1a146b]"
-            @click="router.push('/dashboard')"
+            @click="router.push('/stocks')"
           >
-            ← Back to dashboard
+            ← Back to stocks
           </button>
 
           <div class="flex flex-wrap items-center gap-3">

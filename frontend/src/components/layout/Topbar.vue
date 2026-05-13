@@ -1,11 +1,11 @@
 <template>
   <header class="sticky top-0 z-20 border-b border-gray-200 bg-white">
-    <div class="flex h-16 items-center justify-between px-6">
+    <div class="flex h-16 items-center justify-between px-4 md:px-6">
       <div>
         <p class="text-sm font-semibold text-[#1a146b]">
           {{ title }}
         </p>
-        <p class="text-xs text-gray-500">
+        <p class="hidden text-xs text-gray-500 sm:block">
           Portfolio analytics and stock performance visualization
         </p>
       </div>
@@ -37,8 +37,11 @@ const route = useRoute();
 const authStore = useAuthStore();
 
 const title = computed(() => {
+  if (route.name === "portfolio-create") return "Create Portfolio";
+  if (route.name === "portfolio-edit") return "Edit Portfolio";
   if (route.name === "portfolio-detail") return "Portfolio Detail";
   if (route.name === "stock-detail") return "Stock Detail";
+  if (route.name === "stocks") return "Stocks";
   if (route.name === "compare") return "Compare";
   return "Dashboard";
 });

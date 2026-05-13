@@ -5,9 +5,9 @@
         <button
           type="button"
           class="mb-3 text-sm font-medium text-gray-600 hover:text-[#1a146b]"
-          @click="router.push('/dashboard')"
+          @click="cancelForm"
         >
-          ← Back to dashboard
+          ← {{ isEditMode ? "Back to portfolio" : "Back to dashboard" }}
         </button>
 
         <h1 class="text-3xl font-semibold tracking-tight text-[#1a146b]">
@@ -27,14 +27,21 @@
       />
 
       <PortfolioForm
-        v-else
+        v-else-if="canShowForm"
         :initial-portfolio="initialPortfolio"
         :stocks="stockStore.sortedStocks"
         :submitting="submitting"
         :error-message="formError"
         :submit-label="isEditMode ? 'Update portfolio' : 'Create portfolio'"
+        :cancel-target="cancelTarget"
         @submit="handleSubmit"
       />
+
+      <BaseCard v-else>
+        <p class="text-sm text-gray-700">
+          The form is unavailable for this portfolio.
+        </p>
+      </BaseCard>
     </div>
   </AppLayout>
 </template>
@@ -44,6 +51,7 @@ import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import AppLayout from "@/layouts/AppLayout.vue";
+import BaseCard from "@/components/common/BaseCard.vue";
 import ErrorState from "@/components/common/ErrorState.vue";
 import LoadingState from "@/components/common/LoadingState.vue";
 import PortfolioForm from "@/components/portfolios/PortfolioForm.vue";
@@ -70,6 +78,27 @@ const initialPortfolio = computed(() =>
   isEditMode.value ? portfolioStore.selectedPortfolio : null
 );
 
+const cancelTarget = computed(() => {
+  if (isEditMode.value && route.params.portfolioId) {
+    return `/portfolios/${route.params.portfolioId}`;
+  }
+
+  return "/dashboard";
+});
+
+const canShowForm = computed(() => {
+  if (!isEditMode.value) return true;
+
+  return Boolean(
+    portfolioStore.selectedPortfolio &&
+      !portfolioStore.selectedPortfolio.isDefault
+  );
+});
+
+function cancelForm() {
+  router.push(cancelTarget.value);
+}
+
 async function loadFormData() {
   loading.value = true;
   pageError.value = "";
@@ -82,6 +111,13 @@ async function loadFormData() {
 
       if (portfolioStore.selectedPortfolio?.isDefault) {
         pageError.value = "Default portfolios cannot be edited.";
+      }
+    } else {
+      await portfolioStore.fetchUserPortfolios(authStore.userId);
+
+      if (portfolioStore.userPortfolios.length >= 3) {
+        pageError.value =
+          "You already have 3 portfolios. Delete or edit an existing portfolio before creating another one.";
       }
     }
   } catch (error) {

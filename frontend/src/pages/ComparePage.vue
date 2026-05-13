@@ -1,13 +1,23 @@
 <template>
   <AppLayout>
     <div class="space-y-8">
-      <section>
-        <h1 class="text-3xl font-semibold tracking-tight text-[#1a146b]">
-          Compare
-        </h1>
-        <p class="mt-2 max-w-3xl text-sm text-gray-600">
-          Compare portfolios and individual stocks using backend-generated performance series and metrics.
-        </p>
+      <section class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+        <div>
+          <h1 class="text-3xl font-semibold tracking-tight text-[#1a146b]">
+            Compare
+          </h1>
+          <p class="mt-2 max-w-3xl text-sm text-gray-600">
+            Compare portfolios and individual stocks using backend-generated performance series and metrics.
+          </p>
+        </div>
+
+        <BaseButton
+          variant="secondary"
+          :disabled="selectedItems.length === 0"
+          @click="clearSelection"
+        >
+          Reset
+        </BaseButton>
       </section>
 
       <ErrorState v-if="pageError" :message="pageError" />
@@ -241,6 +251,11 @@ function removeItem(item) {
       (ticker) => ticker !== item.id
     );
   }
+
+  if (selectedItems.value.length <= 1) {
+    comparison.series = {};
+    comparison.metrics = {};
+  }
 }
 
 function clearSelection() {
@@ -288,6 +303,22 @@ async function loadInputs() {
       if (stockStore.stocks.some((stock) => stock.ticker === ticker)) {
         selectedTickers.value = [ticker];
       }
+    }
+
+    if (route.query.portfolioId) {
+      const portfolioId = String(route.query.portfolioId);
+
+      if (
+        portfolioStore.allPortfolioSummaries.some(
+          (portfolio) => portfolio.id === portfolioId
+        )
+      ) {
+        selectedPortfolioIds.value = [portfolioId];
+      }
+    }
+
+    if (selectedItems.value.length > 0) {
+      await runComparison();
     }
   } catch (error) {
     pageError.value =
