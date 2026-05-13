@@ -104,3 +104,98 @@ The frontend connects to the following backend endpoints.
 ```http
 POST /auth/signup
 POST /auth/login
+```
+
+Stocks
+```http
+GET /stocks
+GET /stocks/{ticker}
+GET /stocks/{ticker}/history?range=1M|3M|6M|1Y|ALL
+```
+
+Portfolios
+```http
+GET /portfolios/default
+GET /portfolios/user/{userId}
+GET /portfolios/{portfolioId}
+POST /portfolios
+PUT /portfolios/{portfolioId}
+DELETE /portfolios/{portfolioId}
+```
+
+Comparison
+```http
+POST /compare
+```
+
+Frontend Architecture
+frontend/
+├── src/
+│   ├── api/
+│   │   ├── http.js
+│   │   ├── authApi.js
+│   │   ├── stocksApi.js
+│   │   ├── portfoliosApi.js
+│   │   └── compareApi.js
+│   │
+│   ├── router/
+│   │   └── index.js
+│   │
+│   ├── stores/
+│   │   ├── authStore.js
+│   │   ├── portfolioStore.js
+│   │   └── stockStore.js
+│   │
+│   ├── layouts/
+│   │   └── AppLayout.vue
+│   │
+│   ├── pages/
+│   │   ├── LoginPage.vue
+│   │   ├── DashboardPage.vue
+│   │   ├── PortfolioFormPage.vue
+│   │   ├── PortfolioDetailPage.vue
+│   │   ├── StocksPage.vue
+│   │   ├── StockDetailPage.vue
+│   │   └── ComparePage.vue
+│   │
+│   ├── components/
+│   │   ├── layout/
+│   │   │   ├── Sidebar.vue
+│   │   │   └── Topbar.vue
+│   │   │
+│   │   ├── common/
+│   │   │   ├── BaseButton.vue
+│   │   │   ├── BaseCard.vue
+│   │   │   ├── ErrorState.vue
+│   │   │   ├── LoadingState.vue
+│   │   │   ├── MetricCard.vue
+│   │   │   └── MetricsComparisonTable.vue
+│   │   │
+│   │   ├── charts/
+│   │   │   ├── PerformanceLineChart.vue
+│   │   │   ├── StockPriceChart.vue
+│   │   │   └── ComparisonLineChart.vue
+│   │   │
+│   │   ├── portfolios/
+│   │   │   ├── PortfolioCard.vue
+│   │   │   ├── PortfolioForm.vue
+│   │   │   └── HoldingsTable.vue
+│   │   │
+│   │   └── stocks/
+│   │       └── StockSummaryCard.vue
+│   │
+│   ├── utils/
+│   │   └── formatters.js
+│   │
+│   ├── App.vue
+│   ├── main.js
+│   └── style.css
+│
+├── .env
+├── package.json
+└── README.md
+
+
+
+
+
